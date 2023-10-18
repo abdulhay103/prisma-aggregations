@@ -9,3 +9,77 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
+
+model category {
+  id        BigInt @id @default(autoincrement()) @db.UnsignedBigInt
+  title     String @db.VarChar(100)
+  metaTitle String @db.VarChar(100)
+  slug      String @db.VarChar(100)
+  content   String @db.VarChar(100)
+
+  createdAt DateTime @default(now()) @db.Timestamp(0)
+  updatedAt DateTime @default(now()) @db.Timestamp(0)
+}
+
+model user {
+  id         BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
+  firstName  String   @db.VarChar(100)
+  middleName String   @db.VarChar(100)
+  lastName   String   @db.VarChar(100)
+  mobile     String   @unique @db.VarChar(100)
+  email      String   @unique @db.VarChar(100)
+  password   String   @unique @db.VarChar(100)
+  admin      Int      @db.TinyInt
+  registerAt DateTime @default(now()) @db.Timestamp(0)
+  lastLogin  DateTime @default(now()) @db.Timestamp(0)
+  createdAt  DateTime @default(now()) @db.Timestamp(0)
+  updatedAt  DateTime @default(now()) @db.Timestamp(0)
+
+  // Relations
+  product product[]
+}
+
+model product {
+  id        BigInt @id @default(autoincrement()) @db.UnsignedBigInt
+  name      String @db.VarChar(100)
+  metaTitle String @db.VarChar(100)
+  slug      String @db.VarChar(100)
+  summary   String @db.VarChar(100)
+  price     Int    @db.MediumInt
+  discount  Int    @db.MediumInt
+
+  userId         BigInt           @db.UnsignedBigInt
+  user           user             @relation(fields: [userId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  product_meta   product_meta[]
+  product_review product_review[]
+
+  publishedAt DateTime @default(now()) @db.Timestamp(0)
+  startsAt    DateTime @default(now()) @db.Timestamp(0)
+  endsAt      DateTime @default(now()) @db.Timestamp(0)
+  createdAt   DateTime @default(now()) @db.Timestamp(0)
+  updatedAt   DateTime @default(now()) @db.Timestamp(0)
+}
+
+model product_meta {
+  id      BigInt @id @default(autoincrement()) @db.UnsignedBigInt
+  key     String @db.VarChar(100)
+  content String @db.VarChar(100)
+
+  productId BigInt  @db.UnsignedBigInt
+  product   product @relation(fields: [productId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+
+  createdAt DateTime @default(now()) @db.Timestamp(0)
+  updatedAt DateTime @default(now()) @db.Timestamp(0)
+}
+
+model product_review {
+  id        BigInt @id @default(autoincrement()) @db.UnsignedBigInt
+  title     String @db.VarChar(100)
+  ratting   String @db.VarChar(100)
+  content   String @db.VarChar(100)
+  productId BigInt @db.UnsignedBigInt
+
+  product   product  @relation(fields: [productId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  createdAt DateTime @default(now()) @db.Timestamp(0)
+  updatedAt DateTime @default(now()) @db.Timestamp(0)
+}
