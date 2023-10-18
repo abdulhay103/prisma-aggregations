@@ -28,7 +28,7 @@ model user {
   lastName   String   @db.VarChar(100)
   mobile     String   @unique @db.VarChar(100)
   email      String   @unique @db.VarChar(100)
-  password   String   @unique @db.VarChar(100)
+  password   String   @db.VarChar(100)
   admin      Int      @db.TinyInt
   registerAt DateTime @default(now()) @db.Timestamp(0)
   lastLogin  DateTime @default(now()) @db.Timestamp(0)
@@ -37,6 +37,8 @@ model user {
 
   // Relations
   product product[]
+  order   order[]
+  cart    cart[]
 }
 
 model product {
@@ -80,6 +82,52 @@ model product_review {
   productId BigInt @db.UnsignedBigInt
 
   product   product  @relation(fields: [productId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  createdAt DateTime @default(now()) @db.Timestamp(0)
+  updatedAt DateTime @default(now()) @db.Timestamp(0)
+}
+
+model order {
+  id           BigInt @id @default(autoincrement()) @db.UnsignedBigInt
+  title        String @db.VarChar(100)
+  token        String @db.VarChar(100)
+  subTotal     Int    @db.MediumInt
+  itemDiscount Int    @db.MediumInt
+  tax          Int    @db.MediumInt
+  total        Int    @db.MediumInt
+  discount     Int    @db.MediumInt
+  grandTotal   Int    @db.MediumInt
+  firstName    String @db.VarChar(100)
+  middleName   String @db.VarChar(100)
+  LastName     String @db.VarChar(100)
+  mobile       String @db.VarChar(100)
+  email        String @db.VarChar(100)
+  city         String @db.VarChar(100)
+  country      String @db.VarChar(100)
+
+  userId BigInt @db.UnsignedBigInt
+  user   user   @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now()) @db.Timestamp(0)
+  updatedAt DateTime @default(now()) @db.Timestamp(0)
+}
+
+model cart {
+  id         BigInt @id @default(autoincrement()) @db.UnsignedBigInt
+  title      String @db.VarChar(100)
+  sessionId  String @db.VarChar(100)
+  token      String @db.VarChar(100)
+  status     String @db.VarChar(100)
+  firstName  String @db.VarChar(100)
+  middleName String @db.VarChar(100)
+  lastName   String @db.VarChar(100)
+  mobile     String @db.VarChar(100)
+  email      String @db.VarChar(100)
+  city       String @db.VarChar(100)
+  country    String @db.VarChar(100)
+
+  userId BigInt @db.UnsignedBigInt
+  user   user   @relation(fields: [userId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+
   createdAt DateTime @default(now()) @db.Timestamp(0)
   updatedAt DateTime @default(now()) @db.Timestamp(0)
 }
