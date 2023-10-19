@@ -10,7 +10,38 @@ export async function POST(req) {
         const prisma = new PrismaClient();
         const reqBody = await req.json();
         let result = await prisma.user.create({
-            data: reqBody,
+            data: {
+                firstName: reqBody["firstName"],
+                middleName: reqBody["middleName"],
+                lastName: reqBody["lastName"],
+                mobile: reqBody["mobile"],
+                email: reqBody["email"],
+                admin: reqBody["admin"],
+                password: reqBody["password"],
+                product: {
+                    create: {
+                        name: reqBody["name"],
+                        metaTitle: reqBody["metaTitle"],
+                        slug: reqBody["slug"],
+                        summary: reqBody["summary"],
+                        price: reqBody["price"],
+                        discount: reqBody["discount"],
+                        product_meta: {
+                            create: {
+                                key: reqBody["key"],
+                                content: reqBody["meta_content"],
+                            },
+                        },
+                        product_review: {
+                            create: {
+                                title: reqBody["review_title"],
+                                ratting: reqBody["ratting"],
+                                content: reqBody["review_content"],
+                            },
+                        },
+                    },
+                },
+            },
         });
         return NextResponse.json({
             status: "Success",
