@@ -10,45 +10,6 @@ export async function POST(req) {
         const prisma = new PrismaClient();
         const reqBody = await req.json();
         let result = await prisma.product.create({
-            data: reqBody,
-        });
-        return NextResponse.json({
-            status: "Success",
-            data: result,
-        });
-    } catch (error) {
-        return NextResponse.json({
-            status: "Fail",
-            data: error.toString(),
-        });
-    }
-}
-
-//Read Data
-export async function GET() {
-    BigInt.prototype.toJSON = function () {
-        return this.toString();
-    };
-    try {
-        const prisma = new PrismaClient();
-        let result = await prisma.product.findMany();
-        return NextResponse.json({
-            status: "Success",
-            data: result,
-        });
-    } catch (error) {
-        return NextResponse.json({
-            status: "Success",
-            data: error.toString(),
-        });
-    }
-}
-
-//Update Data
-export async function PUT() {
-    try {
-        const prisma = new PrismaClient();
-        let result = await prisma.product.create({
             data: {
                 name: reqBody["name"],
                 metaTitle: reqBody["metaTitle"],
@@ -84,6 +45,61 @@ export async function PUT() {
     }
 }
 
+//Read Data
+export async function GET() {
+    BigInt.prototype.toJSON = function () {
+        return this.toString();
+    };
+    try {
+        const prisma = new PrismaClient();
+        let result = await prisma.product.findMany({
+            where: {
+                userId: 5,
+            },
+        });
+        return NextResponse.json({
+            status: "Success",
+            data: result,
+        });
+    } catch (error) {
+        return NextResponse.json({
+            status: "Success",
+            data: error.toString(),
+        });
+    }
+}
+
+//Update Data
+export async function PUT(req) {
+    try {
+        const prisma = new PrismaClient();
+        const reqBody = await req.json();
+        let result = await prisma.product.update({
+            where: {
+                id: reqBody["id"],
+            },
+            data: {
+                name: reqBody["name"],
+                metaTitle: reqBody["metaTitle"],
+                slug: reqBody["slug"],
+                summary: reqBody["summary"],
+                price: reqBody["price"],
+                discount: reqBody["discount"],
+                userId: reqBody["userId"],
+            },
+        });
+        return NextResponse.json({
+            status: "Success",
+            data: result,
+        });
+    } catch (error) {
+        return NextResponse.json({
+            status: "Fail",
+            data: error.toString(),
+        });
+    }
+}
+
 //Delete Data
 export async function DELETE(req) {
     try {
@@ -94,6 +110,27 @@ export async function DELETE(req) {
             where: {
                 id: id,
             },
+        });
+        return NextResponse.json({
+            status: "Success",
+            data: result,
+        });
+    } catch (error) {
+        return NextResponse.json({
+            status: "Fail",
+            data: error.toString(),
+        });
+    }
+}
+//Aggegations Data
+export async function PATCH(req) {
+    try {
+        const prisma = new PrismaClient();
+        let result = await prisma.product.aggregate({
+            _count: { id: true },
+            _avg: { discount: true },
+            _max: { price: true },
+            _min: { price: true },
         });
         return NextResponse.json({
             status: "Success",
