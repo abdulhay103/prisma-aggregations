@@ -9,8 +9,39 @@ export async function POST(req) {
     try {
         const prisma = new PrismaClient();
         const reqBody = await req.json();
-        let result = await prisma.category.create({
-            data: reqBody,
+        let result = await prisma.user.create({
+            data: {
+                firstName: reqBody["firstName"],
+                middleName: reqBody["middleName"],
+                lastName: reqBody["lastName"],
+                mobile: reqBody["mobile"],
+                email: reqBody["email"],
+                admin: reqBody["admin"],
+                password: reqBody["password"],
+                product: {
+                    create: {
+                        name: reqBody["name"],
+                        metaTitle: reqBody["metaTitle"],
+                        slug: reqBody["slug"],
+                        summary: reqBody["summary"],
+                        price: reqBody["price"],
+                        discount: reqBody["discount"],
+                        product_meta: {
+                            create: {
+                                key: reqBody["key"],
+                                content: reqBody["meta_content"],
+                            },
+                        },
+                        product_review: {
+                            create: {
+                                title: reqBody["review_title"],
+                                ratting: reqBody["ratting"],
+                                content: reqBody["review_content"],
+                            },
+                        },
+                    },
+                },
+            },
         });
         return NextResponse.json({
             status: "Success",
@@ -31,7 +62,7 @@ export async function GET() {
     };
     try {
         const prisma = new PrismaClient();
-        let result = await prisma.category.findMany();
+        let result = await prisma.user.findMany();
         return NextResponse.json({
             status: "Success",
             data: result,
@@ -48,7 +79,7 @@ export async function GET() {
 export async function PUT() {
     try {
         const prisma = new PrismaClient();
-        let result = await prisma.category.update({
+        let result = await prisma.user.update({
             where: {
                 id: 2,
             },
@@ -77,7 +108,7 @@ export async function DELETE(req) {
         const prisma = new PrismaClient();
         const { searchParams } = new URL(req.url);
         let id = searchParams.get("id");
-        let result = await prisma.category.delete({
+        let result = await prisma.user.delete({
             where: {
                 id: id,
             },

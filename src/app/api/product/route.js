@@ -9,7 +9,7 @@ export async function POST(req) {
     try {
         const prisma = new PrismaClient();
         const reqBody = await req.json();
-        let result = await prisma.category.create({
+        let result = await prisma.product.create({
             data: reqBody,
         });
         return NextResponse.json({
@@ -31,7 +31,7 @@ export async function GET() {
     };
     try {
         const prisma = new PrismaClient();
-        let result = await prisma.category.findMany();
+        let result = await prisma.product.findMany();
         return NextResponse.json({
             status: "Success",
             data: result,
@@ -48,15 +48,28 @@ export async function GET() {
 export async function PUT() {
     try {
         const prisma = new PrismaClient();
-        let result = await prisma.category.update({
-            where: {
-                id: 2,
-            },
+        let result = await prisma.product.create({
             data: {
-                title: "Nature",
-                metaTitle: "Bangladesh and its Nature",
-                slug: "amet consectetur adipisicing elit.",
-                content: " Lorem ipsum dolor sit",
+                name: reqBody["name"],
+                metaTitle: reqBody["metaTitle"],
+                slug: reqBody["slug"],
+                summary: reqBody["summary"],
+                price: reqBody["price"],
+                discount: reqBody["discount"],
+                userId: reqBody["userId"],
+                product_meta: {
+                    create: {
+                        key: reqBody["key"],
+                        content: reqBody["meta_content"],
+                    },
+                },
+                product_review: {
+                    create: {
+                        title: reqBody["review_title"],
+                        ratting: reqBody["ratting"],
+                        content: reqBody["review_content"],
+                    },
+                },
             },
         });
         return NextResponse.json({
@@ -77,7 +90,7 @@ export async function DELETE(req) {
         const prisma = new PrismaClient();
         const { searchParams } = new URL(req.url);
         let id = searchParams.get("id");
-        let result = await prisma.category.delete({
+        let result = await prisma.product.delete({
             where: {
                 id: id,
             },
