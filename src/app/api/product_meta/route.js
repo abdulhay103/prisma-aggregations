@@ -9,7 +9,7 @@ export async function POST(req) {
     try {
         const prisma = new PrismaClient();
         const reqBody = await req.json();
-        let result = await prisma.category.create({
+        let result = await prisma.product_meta.create({
             data: reqBody,
         });
         return NextResponse.json({
@@ -31,7 +31,7 @@ export async function GET() {
     };
     try {
         const prisma = new PrismaClient();
-        let result = await prisma.category.findMany();
+        let result = await prisma.product_meta.findMany();
         return NextResponse.json({
             status: "Success",
             data: result,
@@ -48,7 +48,7 @@ export async function GET() {
 export async function PUT() {
     try {
         const prisma = new PrismaClient();
-        let result = await prisma.category.update({
+        let result = await prisma.product_meta.update({
             where: {
                 id: 2,
             },
@@ -77,7 +77,7 @@ export async function DELETE(req) {
         const prisma = new PrismaClient();
         const { searchParams } = new URL(req.url);
         let id = searchParams.get("id");
-        let result = await prisma.category.delete({
+        let result = await prisma.product_meta.delete({
             where: {
                 id: id,
             },
